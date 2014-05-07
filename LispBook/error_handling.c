@@ -1,12 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "mpc.h"
-
-/* Function Prototypes */
-long eval_op(lval, char*, lval)
-long eval(mpc_ast_t*);
-lval lval_num(long);
-lval lval_err(int);
-void lval_println(lval);
 
 /* Create an enumeration of possible lval types */
 enum { LVAL_NUM, LVAL_ERR };
@@ -22,6 +16,14 @@ typedef struct lval{
 	long num; /* an experssion is either a number */
 	int err;  /* or an error*/
 }lval;
+
+
+/* Function Prototypes */
+lval eval_op(lval, char*, lval);
+lval eval(mpc_ast_t*);
+lval lval_num(long);
+lval lval_err(int);
+void lval_println(lval);
 
 
 /* Declare a static buffer for user input of maximum size of 2048 characters */
@@ -64,8 +66,8 @@ int main(int argc, char** argv){
 		if (mpc_parse("<stdin>", input, Lispy, &r)){
 			/* on success, print the AST */
 			/* on success the internal structure is copied into r, into the field output */
-			long result = eval(r.output); /* evaluate user intput and store the result in 'result' */
-			printf("%li\n", result); 
+			lval result = eval(r.output); /* evaluate user intput and store the result in 'result' */
+			lval_println(result);
 			mpc_ast_delete(r.output); /* delete structure r */
 		}
 		else{
@@ -82,14 +84,18 @@ int main(int argc, char** argv){
 	return 0;
 }
 
-long eval(mpc_ast_t* t){
-	/* if tagged as a number, return it directly, otherwise it's an expression */
-	if (strstr(t->tag, "number"))
-		return atoi(t->contents);
+lval eval(mpc_ast_t* t){
+	/* If tagged as a number */
+	if (strstr(t->tag, "number")){
+		/* Check if there is some error in conversion */
+		errno = 0; /* special variable, used to ensure that the conversion to long goes correctly */
+		long x = strtol(t->contents, NULL, 10);
+		return errno != ERANGE ? lval_num(x) : lval_err(LERR_BAD_NUM);
+	}
 	/* the operator is always the 2nd child ( the first child is always '(' ) */
 	char* op = t->children[1]->contents;
 	/* the third child is stored in 'x' */
-	long x = eval(t->children[2]);
+	lval x = eval(t->children[2]);
 	/* iterate over the remaining children using the operator op */
 	int i = 3;
 	while (strstr(t->children[i]->tag, "expr")){
@@ -103,7 +109,7 @@ long eval(mpc_ast_t* t){
 }
 
 /* use the operator string to see which operation to perform */
-long eval_op(lval x, char* op, lval y){
+lval eval_op(lval x, char* op, lval y){
 	/* If either type is an error, return it straight away */
 	if(x.type == LVAL_ERR) {return x; }
 	if(y.type == LVAL_ERR) {return y; }
