@@ -1,7 +1,7 @@
-#include "Animal.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "Animal.h"
 
 /*
 Modele e implemente em C (ficheiros .h e .c) uma estrutura de dados que represente uma versão simples do
@@ -12,9 +12,9 @@ fixo máximo de 16 caracteres (incluindo o terminador). Implemente também a funçã
 os recursos associados ao animal.
 
 a. Implemente a função de comparação - equalsAnimal -, por forma a considerar que dois animais são iguais se as suas características forem iguais.
-a. Implemente funções de acesso às variáveis de um animal: getAnimalName, getAnimalAge, getAnimalWeight (dado um animal, retornam um dos seus campos).
-a. Implemente a função printAnimal que, quando aplicada a um animal, apresenta os seus dados (use printf para apresentar cada campo do animal).
-a. Implemente um programa - main - que ilustre a utilização das funções anteriores.
+b. Implemente funções de acesso às variáveis de um animal: getAnimalName, getAnimalAge, getAnimalWeight (dado um animal, retornam um dos seus campos).
+c. Implemente a função printAnimal que, quando aplicada a um animal, apresenta os seus dados (use printf para apresentar cada campo do animal).
+d. Implemente um programa - main - que ilustre a utilização das funções anteriores.
 */
 
 typedef struct animal{
@@ -54,10 +54,26 @@ void destroyAnimal(Animal* animal){
 
 int equalsAnimal(Animal* animal1, Animal* animal2){
 	if (animal1 != NULL && animal2 != NULL){
-		if (animal1->_age == animal2->_age && animal1->_weight == animal2->_weight && !(strcmp(animal1->_name, animal2->_name)))
+		if (getAnimalAge(animal1) == getAnimalAge(animal2) && getAnimalWeight(animal1) == getAnimalWeight(animal2) && !(strcmp(getAnimalName(animal1), getAnimalName(animal2))))
 			return 1;
 		else
 			return 0;
 	}
 	return -1; // something went wrong
+}
+
+char* getAnimalName(Animal* animal){
+	return animal->_name;
+
+}
+int getAnimalAge(Animal* animal){
+	return animal->_age;
+}
+
+int getAnimalWeight(Animal* animal){
+	return animal->_weight;
+}
+
+void printAnimal(Animal* animal){
+	printf("Name: %s Age: %d Weight: %d\n", getAnimalName(animal), getAnimalAge(animal), getAnimalWeight(animal));
 }
