@@ -17,11 +17,11 @@ c. Implemente a função printAnimal que, quando aplicada a um animal, apresenta o
 d. Implemente um programa - main - que ilustre a utilização das funções anteriores.
 */
 
-typedef struct animal{
+struct animal{
 	char* _name;
 	int _age;
 	int _weight;
-}Animal;
+};
 
 
 Animal* newAnimal(char* name, int age, int weight){
