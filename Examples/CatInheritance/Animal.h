@@ -1,3 +1,5 @@
+#ifndef __ANIMAL_H__
+#define __ANIMAL_H__
 
 typedef struct animal Animal;
 
@@ -13,3 +15,5 @@ int getAnimalAge(Animal* animal);
 int getAnimalWeight(Animal* animal);
 
 void printAnimal(Animal* animal);
+
+#endif

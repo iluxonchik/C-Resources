@@ -15,10 +15,11 @@ d) Implemente um programa - main - que ilustre a utilização das funções anterior
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "Cat.h"
 #include "Animal.h"
 
 struct cat{
-	Animal* _animal;
+	Animal* _animal; // forward-declaring a struct
 	int _purrLevel;
 	int _fluffiness;
 };
@@ -46,3 +47,35 @@ void destroyCat(struct cat* cat){
 	}
 }
 
+char* getCatName(struct cat* cat){
+	return getAnimalName(cat->_animal);
+}
+
+int getCatAge(struct cat* cat){
+	return getAnimalAge(cat->_animal);
+}
+
+int getCatWeight(struct cat* cat){
+	return getAnimalWeight(cat->_animal);
+}
+
+int getCatFlusffiness(struct cat* cat){
+	return cat->_fluffiness;
+}
+
+int getCatPurrLevel(struct cat* cat){
+	return cat->_purrLevel;
+}
+
+int equalsCat(struct cat* c1, struct cat* c2){
+	if (c1 != NULL && c2 != NULL){
+		return (equalsAnimal(c1->_animal, c2->_animal) && c1->_fluffiness == c2->_fluffiness
+			&& c1->_purrLevel == c2->_purrLevel);
+	}
+	return -1; // something went wrong
+}
+
+void printCat(struct cat* cat){
+	printAnimal(cat->_animal);
+	printf("Purr Level: %d \nFlufiness Level: %d\n", cat->_fluffiness, cat->_purrLevel);
+}
